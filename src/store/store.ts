@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
-// import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 export interface Habit {
   id: string;
@@ -23,8 +22,8 @@ interface HabitState {
 
 const useHabitStore = create<HabitState>()(
   devtools(
-    //   persist(
-    (set, get) => ({
+      persist(
+    (set,get) => ({
       habits: [],
       isLoading: false,
       error: null,
@@ -61,12 +60,12 @@ const useHabitStore = create<HabitState>()(
       fetchHabits: async () => {
         set({ isLoading: true });
         try {
-          //   // Check if we already have habits in the store
-          //   const currentHabits = get().habits;
-          //   if (currentHabits.length > 0) {
-          //     set({ isLoading: false });
-          //     return;
-          //   }
+            // Check if we already have habits in the store
+            const currentHabits = get().habits;
+            if (currentHabits.length > 0) {
+              set({ isLoading: false });
+              return;
+            }
 
           // Simulating an API call only if we don't have habits
           await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -91,12 +90,12 @@ const useHabitStore = create<HabitState>()(
           set({ error: "Failed to fetch habits", isLoading: false });
         }
       },
-    })
-    //     {
-    //       name: "habit-storage",
-    //       storage: createJSONStorage(() => localStorage),
-    //     }
-    //   )
+    }),
+    {
+          name: "habit-storage",
+          storage: createJSONStorage(() => localStorage),
+        }
+      )
   )
 );
 
